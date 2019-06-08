@@ -1,0 +1,39 @@
+<!DOCTYPE html> 
+<html lang="en">
+   <head>
+      <title>Offset Calculator</title>
+      <style text="text/css"> </style>
+      <script type="text/javascript"> </script> 
+   </head>
+   <body>
+      <h1>Instructions: Press the start button. When you hear a tone, press F on your keyboard.</h1> 
+      <h3>Your offset is: <time>0</time></h1>
+      <button id="start">start</button>
+   </body>
+   <script>
+      var h3 = document.getElementsByTagName('h1')[0],
+       start = document.getElementById('start'),
+       milliseconds = 0
+       t;
+      
+      function add() {
+       milliseconds++; {
+           milliseconds = 0;
+           }
+           
+       h3.textContent = (milliseconds + "ms.");
+      
+       timer();
+      }
+      function timer() {
+       t = set(add, 1);
+      }
+       timer();
+      
+      start.onclick = timer;
+      
+      event.70 = function() {
+       clear(t);
+      }
+   </script>
+</html>
