@@ -3,37 +3,62 @@
    <head>
       <title>Offset Calculator</title>
       <style text="text/css"> </style>
-      <script type="text/javascript"> </script> 
+      <script type="text/javascript">
+      // The following function was borrowed from https://stackoverflow.com/questions/10105063/how-to-play-a-notification-sound-on-websites (thanks Timo)
+      function playSound(filename){
+         var mp3Source = '<source src="' + filename + '.mp3" type="audio/mpeg">';
+         var oggSource = '<source src="' + filename + '.ogg" type="audio/ogg">';
+         var embedSource = '<embed hidden="true" autostart="true" loop="false" src="' + filename +'.mp3">';
+         document.getElementById("sound").innerHTML='<audio autoplay="autoplay">' + mp3Source + oggSource + embedSource + '</audio>';
+      }
+      </script> 
    </head>
    <body>
       <h1>Instructions: Press the start button. When you hear a tone, press F on your keyboard.</h1> 
-      <h3>Your offset is: <time>0</time></h1>
+      <h2>Tone will begin 5-10 seconds after pressing start. Refresh to reset.</h2>
+      <h3>Your offset is: <p id="val"></p></h3>
       <button id="start">start</button>
+      <div id="sound"></div>
    </body>
    <script>
-      var h3 = document.getElementsByTagName('h1')[0],
-       start = document.getElementById('start'),
-       milliseconds = 0
-       t;
-      
-      function add() {
-       milliseconds++; {
-           milliseconds = 0;
-           }
-           
-       h3.textContent = (milliseconds + "ms.");
-      
-       timer();
+      var val = document.getElementById('val'),
+      start = document.getElementById('start'),
+      whereIsF = false, // is momma demanding f
+      activated = false, // prevent multiple use
+      startTime, // Init beginning of timer.
+      endTime; // Init end of timer.
+      function keyHandler(e) { // Detect when F is pressed.
+         if (e.keyCode == 70 && whereIsF) {
+            endTime = Date.now(); // What time is it now?
+            var o = endTime - startTime; // What was the difference in time from the start and end?
+            if (isNaN(o)) { // Make sure the user did not react too quickly.
+               val.innerHTML = "Too early! Fail :(";
+               whereIsF = false;
+               return;
+            };
+            val.innerHTML = o + " ms.";
+            whereIsF = false;
+         };
+      };
+      if (document.addEventListener) { // Makes sure everything is listening.
+         document.addEventListener('keydown', keyHandler, false);
+      } else if (document.attatchEvent) {
+         doucment.attatchEvent('onkeydown', keyHandler);
+      };
+      function goTime() { // Begin and play the damn tone!
+         startTime = Date.now();
+         playSound("tone");
       }
-      function timer() {
-       t = set(add, 1);
-      }
-       timer();
-      
-      start.onclick = timer;
-      
-      event.70 = function() {
-       clear(t);
-      }
+      start.onclick = function(){
+         start.style.visibility="hidden"; // Hide on press (locker)
+         if (activated === true) { // Locker2 checker. (just precautionary...)
+            console.log("LOCKED!");
+            return;
+         };
+         var randTimer = Math.floor(Math.random()*6)+5; // min 5 sec, max 10 sec
+         whereIsF = true; // momma demands f
+         setTimeout(function(){goTime();}, randTimer * 1000); // Wait before playing.
+         activated = true; // Locker2 electric boogaloo.
+      };
    </script>
 </html>
